@@ -31,6 +31,13 @@ char print_buf[BUF_SIZE];
 void do_remap();
 void sel_3ds_button(char remap_menu_pos);
 
+
+/*
+	prepare to witness some truly messy code
+	I wrote this while staying up late and being a little drunk :)
+	but I think it works
+*/
+
 void get_ds_name(char index, char* buf)
 {
 	for(int i = 0; i < BUF_SIZE; i++)

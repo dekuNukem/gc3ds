@@ -33,6 +33,11 @@ void setup()
 	lcd.print("controller");
 	lcd.gotoXY(0, 1);
 	lcd.print("found");
+	/* 
+		switching timer0 prescaler to 1 so that PWM frequency on pin 5 and 6
+		is 62.5KHz, making it easier to filter.
+		for details see: http://playground.arduino.cc/Main/TimerPWMCheatsheet
+	*/
 	TCCR0B = TCCR0B & 0b11111000 | 0x01;
 }
 
@@ -48,6 +53,7 @@ void loop()
 {
 	read_gc_controller();
 
+	// write states of GC buttons to 3DS pins
 	button_control(get_3ds_pin(GC_A_BUTTON), Gamecube.report.a);
 	button_control(get_3ds_pin(GC_B_BUTTON), Gamecube.report.b);
 	button_control(get_3ds_pin(GC_X_BUTTON), Gamecube.report.x);
@@ -59,19 +65,20 @@ void loop()
 	button_control(get_3ds_pin(GC_Z_BUTTON), Gamecube.report.z);
 	button_control(get_3ds_pin(GC_START_BUTTON), Gamecube.report.start);
 
-	// for 3ds circle pad
+	// if GC main stick is mapped to 3DS's circle pad
 	if(ds_button_map[GC_MAIN_STICK] == DS_CIRCLE_PAD)
 	{
 		analogWrite(CPAD_X_PIN, (int)(255 - Gamecube.report.xAxis));
 		analogWrite(CPAD_Y_PIN, (int)(Gamecube.report.yAxis));
 	}
+	// if GC c-stick is mapped to 3DS's circle pad
 	if(ds_button_map[GC_C_STICK] == DS_CIRCLE_PAD)
 	{
 		analogWrite(CPAD_X_PIN, (int)(255 - Gamecube.report.cxAxis));
 		analogWrite(CPAD_Y_PIN, (int)(Gamecube.report.cyAxis));
 	}
 
-	// for 3ds d-pad
+	// if GC d-pad is mapped to 3DS d-pad
 	if(ds_button_map[GC_DPAD] == DS_DPAD)
 	{
 		button_control(DS_DPAD_UP_PIN, Gamecube.report.dup);
@@ -79,6 +86,8 @@ void loop()
 		button_control(DS_DPAD_LEFT_PIN, Gamecube.report.dleft);
 		button_control(DS_DPAD_RIGHT_PIN, Gamecube.report.dright);
 	}
+
+	// if GC c-stick is mapped to 3DS d-pad
 	if(ds_button_map[GC_C_STICK] == DS_DPAD)
 	{
 		button_control(DS_DPAD_LEFT_PIN, Gamecube.report.cxAxis < 80);
@@ -86,6 +95,8 @@ void loop()
 		button_control(DS_DPAD_UP_PIN, Gamecube.report.cyAxis > 170);
 		button_control(DS_DPAD_DOWN_PIN, Gamecube.report.cyAxis < 70);
 	}
+
+	// if GC main stick is mapped to 3DS d-pad
 	if(ds_button_map[GC_MAIN_STICK] == DS_DPAD)
 	{
 		button_control(DS_DPAD_LEFT_PIN, Gamecube.report.xAxis < 80);

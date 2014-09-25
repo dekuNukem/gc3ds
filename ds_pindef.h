@@ -29,16 +29,17 @@ void ds_pin_init()
 	pinMode(DS_SELECT_PIN, INPUT);
 }
 
-void button_control(char button, char state)
+// pull a pin to ground to press a button
+void button_control(char pin, char state)
 {
-	if(button < 0)
+	if(pin < 0)
 		return;
 
 	if(state == 0)
-		pinMode(button, INPUT);
+		pinMode(pin, INPUT);
 	else
 	{
-		pinMode(button, OUTPUT);
-		digitalWrite(button, LOW);
+		pinMode(pin, OUTPUT);
+		digitalWrite(pin, LOW);
 	}
 }
