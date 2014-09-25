@@ -2,7 +2,7 @@
 #define CPAD_X_PIN 5
 #define CPAD_Y_PIN 6
 #include <EEPROM.h>
-#include <Nintendo.h>
+#include "Nintendo.h"
 #include "nokia_lcd.h"
 #include "ds_pindef.h"
 #include "setting_menu.h"
