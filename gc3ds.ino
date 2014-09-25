@@ -11,6 +11,8 @@ void setup()
 {
 	ds_pin_init();
 	map_init();
+	pinMode(CPAD_X_PIN, OUTPUT);
+	pinMode(CPAD_Y_PIN, OUTPUT);	
 	analogWrite(CPAD_X_PIN, 127);
 	analogWrite(CPAD_Y_PIN, 127);
 	lcd.clear();
@@ -26,9 +28,6 @@ void setup()
 	if(Gamecube.read(false) && Gamecube.report.start == 1)
 		do_menu();
 
-	pinMode(CPAD_X_PIN, OUTPUT);
-	pinMode(CPAD_Y_PIN, OUTPUT);	
-
 	lcd.clear();
 	lcd.gotoXY(0, 0);
 	lcd.print("controller");
@@ -37,23 +36,7 @@ void setup()
 	TCCR0B = TCCR0B & 0b11111000 | 0x01;
 }
 
-
-void print_xy()
-{
-	lcd.clear();
-	while(1)
-	{
-		read_gc_controller();
-		lcd.gotoXY(0, 0);
-		lcd.print((int)(Gamecube.report.cxAxis));
-		lcd.print("    ");
-		lcd.gotoXY(0, 1);
-		lcd.print((int)(Gamecube.report.cyAxis));
-		lcd.print("    ");
-	}
-}
-
-char is_valid_index(char index)
+char get_3ds_pin(char index)
 {
 	if(ds_button_map[index] >= 0 and ds_button_map[index] <= 7)
 		return ds_pin_map[ds_button_map[index]];
@@ -65,15 +48,16 @@ void loop()
 {
 	read_gc_controller();
 
-	button_control(is_valid_index(GC_A_BUTTON), Gamecube.report.a);
-	button_control(is_valid_index(GC_B_BUTTON), Gamecube.report.b);
-	button_control(is_valid_index(GC_X_BUTTON), Gamecube.report.x);
-	button_control(is_valid_index(GC_Y_BUTTON), Gamecube.report.y);
-	button_control(is_valid_index(GC_L_TRIGGER), Gamecube.report.left > 127);
-	button_control(is_valid_index(GC_R_TRIGGER), Gamecube.report.right > 127);
-	button_control(is_valid_index(GC_L_BUTTON), Gamecube.report.l);
-	button_control(is_valid_index(GC_R_BUTTON), Gamecube.report.r);
-	button_control(is_valid_index(GC_START_BUTTON), Gamecube.report.start);
+	button_control(get_3ds_pin(GC_A_BUTTON), Gamecube.report.a);
+	button_control(get_3ds_pin(GC_B_BUTTON), Gamecube.report.b);
+	button_control(get_3ds_pin(GC_X_BUTTON), Gamecube.report.x);
+	button_control(get_3ds_pin(GC_Y_BUTTON), Gamecube.report.y);
+	button_control(get_3ds_pin(GC_L_TRIGGER), Gamecube.report.left > 127);
+	button_control(get_3ds_pin(GC_R_TRIGGER), Gamecube.report.right > 127);
+	button_control(get_3ds_pin(GC_L_BUTTON), Gamecube.report.l);
+	button_control(get_3ds_pin(GC_R_BUTTON), Gamecube.report.r);
+	button_control(get_3ds_pin(GC_Z_BUTTON), Gamecube.report.z);
+	button_control(get_3ds_pin(GC_START_BUTTON), Gamecube.report.start);
 
 	// for 3ds circle pad
 	if(ds_button_map[GC_MAIN_STICK] == DS_CIRCLE_PAD)
