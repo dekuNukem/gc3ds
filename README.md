@@ -1,7 +1,9 @@
 An adaptor that enables user to use Nintendo GameCube controller on Nintendo 3DS consoles. 
 
 See it in action here: https://www.youtube.com/watch?v=seAI9W9SYjo
+
 Part list: https://docs.google.com/spreadsheets/d/1Zn6B7LS_Fjm-lIFg_gtSEX4vyMsDikPHXBdn-rX0lfU/edit#gid=0
+
 Project pictures: http://imgur.com/a/gn4gs
 
 I will post a detailed guide once I get to work on another 3DS, after taking some nice pictures. 
