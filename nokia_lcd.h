@@ -167,6 +167,12 @@ public:
 		digitalWrite(chip_enable_pin, HIGH);
 	}
 
+	void clear_row(char row)
+	{
+		gotoXY(0, row);
+		print("            ");
+	}
+
 	void gotoXY(int x, int y)
 	{
 		x *= 8;

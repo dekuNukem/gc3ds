@@ -23,14 +23,15 @@
 #define DS_CIRCLE_PAD 8
 #define DS_DPAD 9
 #define BUF_SIZE 13
+#define C_STICK_SMASH_ENABLED_EEPROM_ADDR 255
 
-nokia_lcd lcd(12, 11, 10, 9, 8, 175);
+nokia_lcd lcd(12, 11, 10, 9, 8, 193);
 char ds_button_map[13];
 char print_buf[BUF_SIZE];
-
+char gc_report[10];
+char is_c_stick_smash_enabled = 1; 
 void do_remap();
 void sel_3ds_button(char remap_menu_pos);
-
 
 /*
 	prepare to witness some truly messy code
@@ -166,6 +167,7 @@ void map_init()
 {
 	for(int i = 0; i < 13; i++)
 		ds_button_map[i] = EEPROM.read(i);
+	is_c_stick_smash_enabled = EEPROM.read(C_STICK_SMASH_ENABLED_EEPROM_ADDR);
 }
 
 void mapping_reset()
@@ -175,14 +177,15 @@ void mapping_reset()
 	EEPROM.write(GC_X_BUTTON, DS_X_BUTTON);
 	EEPROM.write(GC_Y_BUTTON, DS_Y_BUTTON);
 	EEPROM.write(GC_L_TRIGGER, DS_L_BUTTON);
-	EEPROM.write(GC_L_BUTTON, UNDEFINED);
+	EEPROM.write(GC_L_BUTTON, DS_L_BUTTON);
 	EEPROM.write(GC_R_TRIGGER, DS_R_BUTTON);
-	EEPROM.write(GC_R_BUTTON, UNDEFINED);
+	EEPROM.write(GC_R_BUTTON, DS_R_BUTTON);
 	EEPROM.write(GC_Z_BUTTON, UNDEFINED);
 	EEPROM.write(GC_START_BUTTON, DS_START_BUTTON);
 	EEPROM.write(GC_MAIN_STICK, DS_CIRCLE_PAD);
 	EEPROM.write(GC_DPAD, DS_DPAD);
 	EEPROM.write(GC_C_STICK, UNDEFINED);
+	EEPROM.write(C_STICK_SMASH_ENABLED_EEPROM_ADDR, 0);
 }
 
 void read_gc_controller()
@@ -191,6 +194,8 @@ void read_gc_controller()
 		return;
 	else
 	{
+		analogWrite(CPAD_X_PIN, (int)(127));
+		analogWrite(CPAD_Y_PIN, (int)(127));
 		lcd.clear();
 		lcd.gotoXY(0, 0);
 		lcd.print("connect");
@@ -263,7 +268,7 @@ bool unique_press_right()
 void do_menu()
 {
 	char main_menu_pos = 0;
-	char main_menu_item = 3;
+	char main_menu_item = 2;
 	lcd.clear();
 	while(1)
 	{
@@ -279,15 +284,36 @@ void do_menu()
 			lcd.print("change      ");
 			lcd.gotoXY(0, 1);
 			lcd.print("button map");
+			lcd.clear_row(2);
 			if(unique_press_a())
 				do_remap();
 		}
 		else if(main_menu_pos == 1)
 		{
 			lcd.gotoXY(0, 0);
+			lcd.print("c stick     ");
+			lcd.gotoXY(0, 1);
+			lcd.print("side smash: ");
+
+			lcd.gotoXY(0, 2);
+			if(is_c_stick_smash_enabled)
+				lcd.print("enabled     ");
+			else
+				lcd.print("disabled    ");
+
+			if(unique_press_a())
+			{
+				EEPROM.write(C_STICK_SMASH_ENABLED_EEPROM_ADDR, !is_c_stick_smash_enabled);
+				map_init();
+			}
+		}
+		else
+		{
+			lcd.gotoXY(0, 0);
 			lcd.print("reset      ");
 			lcd.gotoXY(0, 1);
 			lcd.print("mapping    ");
+			lcd.clear_row(2);
 			if(unique_press_a())
 			{
 				mapping_reset();
@@ -297,13 +323,6 @@ void do_menu()
 				lcd.print("done");
 				delay(2000);
 			}
-		}
-		else
-		{
-			lcd.gotoXY(0, 0);
-			lcd.print("unknown   ");
-			lcd.gotoXY(0, 1);
-			lcd.print("page    ");
 		}
 
 		lcd.gotoXY(0, 4);
@@ -317,6 +336,11 @@ void do_menu()
 			return;
 		}
 	}
+}
+
+void c_stick_setting()
+{
+
 }
 
 void do_remap()
