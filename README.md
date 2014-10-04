@@ -1,11 +1,3 @@
-An adaptor that enables user to use Nintendo GameCube controller on Nintendo 3DS consoles. 
+gc3ds is a 3DS modification that allows user to use Nintendo GameCube controller to play any games on Nintendo 3DS consoles. This open-source project uses an Arduino Nano to read the state of GameCube controller, then mirror them to Nintendo 3DS with a maximum delay of no more than 1/1000 seconds (1 millisecond). Users can also choose to customize button mappings between gc controller and 3DS with a LCD screen. 
 
-See it in action here: https://www.youtube.com/watch?v=seAI9W9SYjo
-
-Part list: https://docs.google.com/spreadsheets/d/1Zn6B7LS_Fjm-lIFg_gtSEX4vyMsDikPHXBdn-rX0lfU/edit#gid=0
-
-Project pictures: http://imgur.com/a/gn4gs
-
-I will post a detailed guide once I get to work on another 3DS, after taking some nice pictures. 
-
-The controller(Arduino Nano) reads the states of GC controller then writes them to the 3DS. All buttons on GC controller can be freely remapped to 3DS buttons. Still needs a some polishing and cleaning up, but it works.
+For all the resources about this project(video, parts list, guides, etc), see http://goo.gl/SyRLb5
